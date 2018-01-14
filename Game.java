@@ -42,8 +42,8 @@ public class Game extends JFrame {
 	private String text;
 	private int count = 0;
 
-	private int sec = 10;
-	private int min = 0;
+	private int sec = 0;
+	private int min = 1;
 	private JLabel timeLabel;
 	DecimalFormat df = new DecimalFormat("00");
 	private int spaceCount = 0;
@@ -198,6 +198,7 @@ public class Game extends JFrame {
 				}
 				textPane.select(count, count + 1);
 			} else {
+				StyleConstants.setBackground(style, Color.WHITE);
 				if (count > text.length() - 1) {
 					count = text.length() - 1;
 				}
@@ -215,8 +216,6 @@ public class Game extends JFrame {
 					StyleConstants.setForeground(style, Color.RED);
 					if (nextChar == ' ') {
 						StyleConstants.setBackground(style, Color.RED);
-					} else {
-						StyleConstants.setBackground(style, Color.WHITE);
 					}
 					try {
 						d.replace(count, 1, "" + nextChar, style);
