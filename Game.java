@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
@@ -48,6 +50,7 @@ public class Game extends JFrame {
 	private double errorCount = 0;
 	
 	private String filename;
+	private String name;
 
 	// Timer
 	private Timer timer = new Timer(1000, new TimerListener()); // 1 sec
@@ -69,7 +72,21 @@ public class Game extends JFrame {
 				double errorDiff = count - errorCount;
 				String error = "" + df.format(((errorDiff / count) * 100)) + "%";
 				JOptionPane.showMessageDialog(null, "Game Over!\n" + wpm + "\nAccuracy: " + error);
+				saveInformation(spaceCount, error);
 				System.exit(0);
+			}
+		}
+
+		private void saveInformation(int spaceCount, String error) {
+			FileWriter fw = null;
+			try {
+				/* Yang: make sure to change file name when not appending */
+				fw = new FileWriter(new File("Record.txt"), true);
+				fw.write("\n" + name + ", " + spaceCount + ", " + error);
+				fw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
@@ -92,6 +109,28 @@ public class Game extends JFrame {
 			s.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		setup();
+	}
+
+	public Game(String filename, String name) {
+		this.filename =filename;
+		this.name = name;
+		timeLabel = new JLabel(min + ":" + df.format(sec));
+		timeLabel.setFont(new Font("Time New Roman", 1, 20));
+		timeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		Scanner s;
+		try {
+			s = new Scanner(new File(filename));
+			StringBuilder sb = new StringBuilder();
+			while (s.hasNextLine()) {
+				String str = s.nextLine();
+				sb.append(str);
+			}
+			text = sb.toString();
+			s.close();
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		setup();

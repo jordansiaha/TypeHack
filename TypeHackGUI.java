@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -36,6 +37,8 @@ public class TypeHackGUI extends Application {
 	Button multiPlayer;
 	Button back;
 	Button back2;
+	Button saveName;
+	TextField nameField;
 	Scene mainMenuScene;
 	Scene singlePlayerScene;
 	Scene multiPlayerScene;
@@ -49,6 +52,8 @@ public class TypeHackGUI extends Application {
 	Button b4 = new Button("Holmes' Final Problem");
 	Button b5 = new Button("The Idiots");
 	DropShadow borderGlow = new DropShadow();
+	
+	String name;
 
 	final String FONT_NAME = "Georgia";
 	static final int X = 800;
@@ -64,6 +69,8 @@ public class TypeHackGUI extends Application {
 		back = new Button("Return to Main Menu");
 		back2 = new Button("Return to Main Menu");
 		title = new Label("TypeHack");
+		nameField = new TextField();
+		saveName = new Button("Enter");
 		singlePlayer.setOnAction(e -> ButtonClicked(e));
 		multiPlayer.setOnAction(e -> ButtonClicked(e));
 		back.setOnAction(e -> ButtonClicked(e));
@@ -73,6 +80,7 @@ public class TypeHackGUI extends Application {
 		b3.setOnAction(e -> ButtonClicked(e));
 		b4.setOnAction(e -> ButtonClicked(e));
 		b5.setOnAction(e -> ButtonClicked(e));
+		saveName.setOnAction(e -> ButtonClicked(e));
 
 		/*
 		 * Title 'TypeHack'
@@ -85,6 +93,7 @@ public class TypeHackGUI extends Application {
 		 */
 		mainMenu = new GridPane();
 		// mainMenu.setPrefSize(950, 650);
+
 		mainMenu.setHgap(10);
 		mainMenu.setVgap(8);
 		mainMenu.setAlignment(Pos.CENTER);
@@ -99,11 +108,16 @@ public class TypeHackGUI extends Application {
 		multiPlayer.getStyleClass().add("glass-wheat");
 		mainMenu.add(singlePlayer, 0, 0);
 		mainMenu.add(multiPlayer, 1, 0);
+		mainMenu.add(nameField, 0, 1);
+		mainMenu.add(saveName, 1, 1);
+		saveName.getStyleClass().add("glass-wheat");
+		nameField.setPromptText("Enter you name");
+		nameField.selectAll();
 		GridPane.setHalignment(singlePlayer, HPos.LEFT);
 		GridPane.setHalignment(multiPlayer, HPos.RIGHT);
 		GridPane.setHalignment(title, HPos.CENTER);
 
-		GridPane.setConstraints(title, 5, 1);
+		GridPane.setConstraints(title, 5, 2);
 
 		/*
 		 * Single Player Menu
@@ -166,21 +180,25 @@ public class TypeHackGUI extends Application {
 		else if (e.getSource() == singlePlayer) {
 			currentStage.setScene(singlePlayerScene);
 		} else if (e.getSource() == b1) {
-			Game game = new Game("Random");
+			Game game = new Game("Random", name);
 
 		} else if (e.getSource() == b2) {
-			Game game = new Game("A_Christmas_Carol");
+			Game game = new Game("A_Christmas_Carol", name);
 
 		} else if (e.getSource() == b3) {
-			Game game = new Game("A_Resumed_Identity");
+			Game game = new Game("A_Resumed_Identity", name);
 
 		} else if (e.getSource() == b4) {
-			Game game = new Game("Holmes_Final_Problem");
+			Game game = new Game("Holmes_Final_Problem", name);
 
 		} else if (e.getSource() == b5) {
-			Game game = new Game("The_Idiots");
+			Game game = new Game("The_Idiots", name);
 
-		} else {
+		} else if (e.getSource() == saveName){
+			nameField.setDisable(true);
+			name = nameField.getText();
+		}
+		else {
 			currentStage.setScene(multiPlayerScene);
 		}
 	}

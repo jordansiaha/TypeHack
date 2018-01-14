@@ -1,0 +1,4 @@
+Name, Word_Per_Minute, Accuracy
+Yang, 304, 1.62%
+Jordan, 165, 8.88%
+John, 50, 97.36%
