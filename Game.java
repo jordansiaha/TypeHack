@@ -163,7 +163,7 @@ public class Game extends JFrame {
 
 	private void connectServer() {
 		try {
-			socket = new Socket(serverIP, 60000);
+			socket = new Socket(serverIP, 9999);
 
 			outputToServer = new ObjectOutputStream(socket.getOutputStream());
 

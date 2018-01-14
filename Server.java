@@ -28,11 +28,13 @@ public class Server {
 
 		try {
 			@SuppressWarnings("resource")
-			ServerSocket serverSock = new ServerSocket(60000);
+			ServerSocket serverSock = new ServerSocket(9999);
+			System.out.println(serverSock.getInetAddress().getHostAddress());
 
 			while (true) {
 				System.out.println("Waiting for connection...");
 				Socket clientSocket = serverSock.accept();
+
 				System.out.println("connected");
 				System.out.println("client Name: " + clientSocket.getInetAddress().getHostName());
 				System.out.println("client IP: " + clientSocket.getInetAddress().getHostAddress());
@@ -47,7 +49,7 @@ public class Server {
 				FileWriter fw = null;
 				try {
 					/* Yang: make sure to change file name when not appending */
-					fw = new FileWriter(new File("Record.txt"), true);
+					fw = new FileWriter(new File("ServerRecord.txt"), true);
 					fw.write(output);
 					fw.close();
 				} catch (IOException e) {
