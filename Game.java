@@ -42,8 +42,8 @@ public class Game extends JFrame {
 	private String text;
 	private int count = 0;
 
-	private int sec = 0;
-	private int min = 1;
+	private int sec = 10;
+	private int min = 0;
 	private JLabel timeLabel;
 	DecimalFormat df = new DecimalFormat("00");
 	private int spaceCount = 0;
@@ -51,6 +51,8 @@ public class Game extends JFrame {
 	
 	private String filename;
 	private String name;
+	
+	private boolean done;
 
 	// Timer
 	private Timer timer = new Timer(1000, new TimerListener()); // 1 sec
@@ -73,7 +75,9 @@ public class Game extends JFrame {
 				String error = "" + df.format(((errorDiff / count) * 100)) + "%";
 				JOptionPane.showMessageDialog(null, "Game Over!\n" + wpm + "\nAccuracy: " + error);
 				saveInformation(spaceCount, error);
-				System.exit(0);
+				done = true;
+				dispose();
+				return;
 			}
 		}
 
@@ -154,7 +158,8 @@ public class Game extends JFrame {
 		textPane.setEditable(false);
 		this.add(jsp, BorderLayout.CENTER);
 		this.add(timeLabel, BorderLayout.NORTH);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.setVisible(true);
 	}
 
 	private class KeyboardListener implements KeyListener {
@@ -231,5 +236,14 @@ public class Game extends JFrame {
 		}
 
 	}
+
+	public boolean isDone() {
+		return done;
+	}
+
+	public void setDone(boolean done) {
+		this.done = done;
+	}
+	
 
 }

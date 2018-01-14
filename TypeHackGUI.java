@@ -1,3 +1,5 @@
+import com.sun.glass.events.WindowEvent;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -52,7 +54,7 @@ public class TypeHackGUI extends Application {
 	Button b4 = new Button("Holmes' Final Problem");
 	Button b5 = new Button("The Idiots");
 	DropShadow borderGlow = new DropShadow();
-	
+
 	String name;
 
 	final String FONT_NAME = "Georgia";
@@ -63,6 +65,7 @@ public class TypeHackGUI extends Application {
 	public void start(Stage primaryStage) {
 		currentStage = primaryStage;
 		primaryStage.setTitle("TypeHack");
+
 
 		singlePlayer = new Button("Single Player");
 		multiPlayer = new Button("MultiPlayer");
@@ -171,35 +174,52 @@ public class TypeHackGUI extends Application {
 
 		primaryStage.setScene(mainMenuScene);
 		primaryStage.show();
-
 	}
 
 	public void ButtonClicked(ActionEvent e) {
-		if (e.getSource() == back || e.getSource() == back2)
+		if (e.getSource() == back || e.getSource() == back2) {
 			currentStage.setScene(mainMenuScene);
-		else if (e.getSource() == singlePlayer) {
+		} else if (e.getSource() == singlePlayer) {
 			currentStage.setScene(singlePlayerScene);
 		} else if (e.getSource() == b1) {
 			Game game = new Game("Random", name);
-
+			reset(game);
 		} else if (e.getSource() == b2) {
 			Game game = new Game("A_Christmas_Carol", name);
-
+			reset(game);
 		} else if (e.getSource() == b3) {
 			Game game = new Game("A_Resumed_Identity", name);
-
+			reset(game);
 		} else if (e.getSource() == b4) {
 			Game game = new Game("Holmes_Final_Problem", name);
-
+			reset(game);
 		} else if (e.getSource() == b5) {
 			Game game = new Game("The_Idiots", name);
-
-		} else if (e.getSource() == saveName){
+			reset(game);
+		} else if (e.getSource() == saveName) {
 			nameField.setDisable(true);
 			name = nameField.getText();
-		}
-		else {
+		} else {
 			currentStage.setScene(multiPlayerScene);
+		}
+	}
+
+	private void reset(Game game) {
+		currentStage.hide();
+		while (true) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			if (game.isDone()) {
+				currentStage.show();
+				currentStage.setScene(mainMenuScene);
+				nameField.setText("");
+				nameField.setDisable(false);
+				break;
+			}
 		}
 	}
 
