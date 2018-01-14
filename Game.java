@@ -1,5 +1,4 @@
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,6 +11,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
@@ -30,9 +32,9 @@ import javax.swing.text.StyleContext;
 
 public class Game extends JFrame {
 
-//	public static void main(String[] args) {
-//		new Game().setVisible(true);
-//	}
+	// public static void main(String[] args) {
+	// new Game().setVisible(true);
+	// }
 
 	private DefaultStyledDocument d = new DefaultStyledDocument();
 	private StyleContext context = new StyleContext();
@@ -48,11 +50,17 @@ public class Game extends JFrame {
 	DecimalFormat df = new DecimalFormat("00");
 	private int spaceCount = 0;
 	private double errorCount = 0;
-	
+
 	private String filename;
 	private String name;
-	
+
 	private boolean done;
+
+	private Socket socket;
+	private ObjectOutputStream outputToServer;
+	private ObjectInputStream inputFromServer;
+
+	private String serverIP;
 
 	// Timer
 	private Timer timer = new Timer(1000, new TimerListener()); // 1 sec
@@ -68,13 +76,22 @@ public class Game extends JFrame {
 				sec--;
 			}
 			timeLabel.setText(min + ":" + df.format(sec));
-			if (min == 0 && sec == 0){
+			if (min == 0 && sec == 0) {
 				DecimalFormat df = new DecimalFormat("0.00");
 				String wpm = "WPM: " + spaceCount;
 				double errorDiff = count - errorCount;
 				String error = "" + df.format(((errorDiff / count) * 100)) + "%";
 				JOptionPane.showMessageDialog(null, "Game Over!\n" + wpm + "\nAccuracy: " + error);
 				saveInformation(spaceCount, error);
+
+				try {
+					String output = "\n" + name + ", " + spaceCount + ", " + error;
+					outputToServer.writeObject(output);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				done = true;
 				dispose();
 				return;
@@ -96,8 +113,9 @@ public class Game extends JFrame {
 
 	}
 
-	public Game(String filename) {
-		this.filename =filename;
+	public Game(String filename, String serverIP) {
+		this.filename = filename;
+		this.serverIP = serverIP;
 		timeLabel = new JLabel(min + ":" + df.format(sec));
 		timeLabel.setFont(new Font("Time New Roman", 1, 20));
 		timeLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -115,12 +133,14 @@ public class Game extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		connectServer();
 		setup();
 	}
 
-	public Game(String filename, String name) {
-		this.filename =filename;
+	public Game(String filename, String name, String serverIP) {
+		this.filename = filename;
 		this.name = name;
+		this.serverIP = serverIP;
 		timeLabel = new JLabel(min + ":" + df.format(sec));
 		timeLabel.setFont(new Font("Time New Roman", 1, 20));
 		timeLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -137,7 +157,22 @@ public class Game extends JFrame {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		connectServer();
 		setup();
+	}
+
+	private void connectServer() {
+		try {
+			socket = new Socket(serverIP, 60000);
+
+			outputToServer = new ObjectOutputStream(socket.getOutputStream());
+
+			inputFromServer = new ObjectInputStream(socket.getInputStream());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void setup() {
@@ -243,6 +278,5 @@ public class Game extends JFrame {
 	public void setDone(boolean done) {
 		this.done = done;
 	}
-	
 
 }

@@ -1,28 +1,18 @@
-import com.sun.glass.events.WindowEvent;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -31,9 +21,17 @@ import javafx.stage.Stage;
 
 public class TypeHackGUI extends Application {
 	public static void main(String[] args) {
+		if (args.length != 1) {
+			System.err.println("Must have 1 argument as server ip!");
+			System.exit(1);
+		}
+		serverIP = args[0];
+		System.out.println("serverIP: " + serverIP);
 		launch(args);
 	}
 
+	private static String serverIP;
+	
 	Stage currentStage;
 	Button singlePlayer;
 	Button multiPlayer;
@@ -84,6 +82,7 @@ public class TypeHackGUI extends Application {
 		b4.setOnAction(e -> ButtonClicked(e));
 		b5.setOnAction(e -> ButtonClicked(e));
 		saveName.setOnAction(e -> ButtonClicked(e));
+		nameField.setOnKeyPressed(e -> KeyPressed(e));
 
 		/*
 		 * Title 'TypeHack'
@@ -176,22 +175,29 @@ public class TypeHackGUI extends Application {
 		primaryStage.show();
 	}
 
+	private void KeyPressed(KeyEvent key) {
+		if (key.getCode() == KeyCode.ENTER){
+			nameField.setDisable(true);
+			name = nameField.getText();
+		}
+	}
+
 	public void ButtonClicked(ActionEvent e) {
 		if (e.getSource() == back || e.getSource() == back2) {
 			currentStage.setScene(mainMenuScene);
 		} else if (e.getSource() == singlePlayer) {
 			currentStage.setScene(singlePlayerScene);
 		} else if (e.getSource() == b1) {
-			Game game = new Game("Random", name);
+			Game game = new Game("Random", name, serverIP);
 			reset(game);
 		} else if (e.getSource() == b2) {
-			Game game = new Game("A_Christmas_Carol", name);
+			Game game = new Game("A_Christmas_Carol", name, serverIP);
 			reset(game);
 		} else if (e.getSource() == b3) {
-			Game game = new Game("A_Resumed_Identity", name);
+			Game game = new Game("A_Resumed_Identity", name, serverIP);
 			reset(game);
 		} else if (e.getSource() == b4) {
-			Game game = new Game("Holmes_Final_Problem", name);
+			Game game = new Game("Holmes_Final_Problem", name, serverIP);
 			reset(game);
 		} else if (e.getSource() == b5) {
 			Game game = new Game("The_Idiots", name);
